@@ -1,0 +1,212 @@
+<div class=" alert-messages" *ngIf="errMessage">
+    {{errMessage}}
+</div>
+
+<div class=" notification is-success succ-mess" *ngIf="successMess">
+    {{successMess}}
+</div>
+
+<div class="container">
+    <div class="columns">
+        <div class="column first-column">
+            <img [src]="myImageMenu">
+        </div>
+        <div class="column second-column">
+            <form [formGroup]="testForm">
+                <table class="table is-fullwidth is-bordered">
+                    <thead>
+                        <tr>
+                            <th>Order Item</th>
+                            <th>Price</th>
+                            <th>On 5% Promo</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+
+                            <td><input type="text" formControlName="orderName"></td>
+                            <td><input type="number" formControlName="price"></td>
+                            <td> <input type="checkbox" formControlName="isDiscounted"></td>
+                            <td><button (click)="findNameAndPrice(testForm)" class="button is-success" >Submit</button></td>
+
+                        </tr>
+                    </tbody>
+
+
+                </table>
+            </form>
+            <div class="table-clerk">
+                <h3> Attending Clerk : Jane Doe</h3>
+            </div>
+            <div class="table-order">
+                <form [formGroup]="updateForm">
+                    <table class="table is-fullwidth is-bordered">
+                        <thead>
+                            <tr>
+                                <th>Order Item</th>
+                                <th>Price</th>
+                                <th>On 5% Promo</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of orders">
+                                <td>
+                                    <div *ngIf="deciderButtonUpdate === order.id "> <input type="text"
+                                            formControlName="udpateOrderName"> </div>
+
+                                    <div *ngIf="deciderButtonUpdate != order.id "> {{order?.orderName}} </div>
+
+                                </td>
+
+                                <td>
+                                    <div *ngIf="deciderButtonUpdate === order.id"> 
+                                        <input type="text"
+                                            formControlName="udpatePrice">
+                                    </div>
+
+                                    <div *ngIf="deciderButtonUpdate != order.id ">
+                                        {{order?.price}} </div>
+                                </td>
+                               
+                                <td>
+                                    <div *ngIf="deciderButtonUpdate === order.id">
+
+                                        <input type="checkbox"  
+                                            *ngIf="order?.isDiscounted  === false" 
+                                            formControlName="udpateIsDiscounted"  >
+
+
+                                        <input type="checkbox" *ngIf="order?.isDiscounted  === true" checked 
+                                        formControlName="udpateIsDiscounted" >
+                                    </div>
+
+
+
+
+
+
+
+
+                                    <div *ngIf="deciderButtonUpdate != order.id">
+                                        <input type="checkbox" *ngIf="order?.isDiscounted  === false"
+                                            (change)="updateDisc(order.id,order.isDiscounted,order.type)" disabled>
+
+
+                                        <input type="checkbox" *ngIf="order?.isDiscounted  === true" checked
+                                            (change)="updateDisc(order.id,order.isDiscounted,order.type)" disabled>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <div *ngIf="deciderButtonUpdate === order.id" style="display: inline;">
+                                        <!--  <p (click)="updateDisc(order.id,order.isDiscounted,order.type)">Update</p>  -->
+                                        <p (click)="onSubmitNewForm(order.id,updateForm,order.type,order.price)" > Update</p>
+                                       
+                                        <p (click)="cancelButton()">Cancel</p>
+
+                                    </div>
+                                    <div *ngIf="deciderButtonUpdate != order.id" style="display: inline;">
+                                        
+                                        <p (click)="disableTheButton(order)">Edit</p>
+                                        <p (click)="deleteOrderButton(order.id)">Delete</p>
+                                    </div>
+
+
+
+
+
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </form>
+            </div>
+
+            <div class="div-total-regular-bill" >
+                <h4>Regular Bill :
+                    
+                   
+                        {{finalOrder}}
+                          </h4> 
+            </div>
+            <div class="div-total-discounted-bill" >
+                <h4>Total Discounted Bill : {{ finalOrderSiscounted }}</h4>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- <h1 class="title">Index</h1>
+<div class="container">
+    <ul *ngFor="let order of orders">
+        <li>
+            {{order?.id}}
+        </li>
+        <li>
+            {{order?.orderName}}
+        </li>
+        <li>
+            {{order?.price}}
+        </li>
+       
+        <li>
+            {{order?.isDiscounted}}
+            <input type="checkbox"  *ngIf="order?.isDiscounted  === false" (change)="updateDisc(order.id,order.isDiscounted)">
+            <input type="checkbox"  *ngIf="order?.isDiscounted  === true" checked (change)="updateDisc(order.id,order.isDiscounted)">
+        </li>
+    </ul>
+
+
+    <div *ngIf="finalOrder">
+        <h4>Total : {{ finalOrder }}</h4>
+    </div>
+    <button (click)="getTotal()">Get total </button>
+
+    <div *ngIf="finalOrderSiscounted">
+        <h4>Total : {{ finalOrderSiscounted }}</h4>
+    </div>
+    <button (click)="getTotalDiscount()">Get total Discounted</button>
+    
+</div>
+
+
+<div class="container">
+    <ul *ngFor="let item of menu">
+        <li>{{item.orderName}}</li>
+        <li>{{item.price}}</li>
+        <li>{{item.id}}</li>
+        <button class="button is-success" (click)="addMeno(item)">Add</button>
+    </ul>
+</div>
+
+
+<div class="contaner">
+
+
+
+    <form [formGroup]="testForm">
+        
+        <input type="text" formControlName="orderName">
+        <input type="number" formControlName="price">
+        <input type="checkbox" formControlName="isDiscounted" >
+
+        <button (click)="findNameAndPrice(testForm)">Submit</button>
+    </form>
+
+    
+</div>
+ -->
